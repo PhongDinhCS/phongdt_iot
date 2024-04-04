@@ -2,6 +2,37 @@ print("Sensors and Actuators")
 
 import time
 import serial.tools.list_ports
+import paho.mqtt.client as mqtt
+
+
+
+MQTT_SERVER = "mqtt.ohstem.vn"
+MQTT_PORT = 1883
+MQTT_USERNAME = "testing12345"
+MQTT_PASSWORD = ""
+MQTT_TOPIC_PUB_TEMP = MQTT_USERNAME + "/feeds/V1/mois/"
+MQTT_TOPIC_PUB_MOIS = MQTT_USERNAME + "/feeds/V1/temp/"
+MQTT_TOPIC_SUB = MQTT_USERNAME + "/feeds/V1/control"
+
+def mqtt_connected(client, userdata, flags, rc):
+    print("Connected succesfully!!")
+    client.subscribe(MQTT_TOPIC_SUB)
+
+def mqtt_subscribed(client, userdata, mid, granted_qos):
+    print("Subscribed to Topic!!!")
+
+def mqtt_recv_message(client, userdata, message):
+    print("Received: ", message.payload.decode("utf-8"))
+
+mqttClient = mqtt.Client()
+mqttClient.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
+mqttClient.connect(MQTT_SERVER, int(MQTT_PORT), 60)
+
+mqttClient.on_connect = mqtt_connected
+mqttClient.on_subscribe = mqtt_subscribed
+mqttClient.on_message = mqtt_recv_message
+
+mqttClient.loop_start()
 
 def getPort():
     ports = serial.tools.list_ports.comports()
@@ -68,16 +99,8 @@ def readMoisture():
 
 
 while True:
-    setDevice1(True)
-    time.sleep(2)
-    setDevice1(False)
-    time.sleep(2)
-
-
-
-while True:
     print("TEST SENSOR")
-    print(readMoisture())
+    mqttClient.publish(MQTT_TOPIC_PUB_TEMP,readTemperature())
     time.sleep(1)
-    print(readTemperature())
+    mqttClient.publish(MQTT_TOPIC_PUB_MOIS,readMoisture())
     time.sleep(1)
