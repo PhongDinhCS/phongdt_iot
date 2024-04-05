@@ -1,65 +1,37 @@
-import paho.mqtt.client as mqtt
+print("Sensors and Actuators")
+
 import time
-import keyboard
+import paho.mqtt.client as mqtt
+
+# MQTT Broker configuration
 MQTT_SERVER = "mqtt.ohstem.vn"
 MQTT_PORT = 1883
 MQTT_USERNAME = "testing12345"
 MQTT_PASSWORD = ""
-MQTT_TOPIC_PUB = MQTT_USERNAME + "/control"
-MQTT_TOPIC_SUB = MQTT_USERNAME + "/feeds/V1"
-MQTT_TOPIC_SUB_TEMP = MQTT_USERNAME + "/temp"
-MQTT_TOPIC_SUB_MOIS = MQTT_USERNAME + "/mois"
+MQTT_TOPIC_PUB_TEMP = MQTT_USERNAME + "/feeds/V1/temp/"
+MQTT_TOPIC_PUB_MOIS = MQTT_USERNAME + "/feeds/V1/mois/"
+MQTT_TOPIC_SUB = MQTT_USERNAME + "/feeds/V1/control"
 
-
+# Function to handle MQTT connection
 def mqtt_connected(client, userdata, flags, rc):
-    print("Connected succesfully!!")
-    client.subscribe(MQTT_TOPIC_SUB_TEMP)
-    client.subscribe(MQTT_TOPIC_SUB_MOIS)
+    print("Connected successfully!!")
     client.subscribe(MQTT_TOPIC_SUB)
-    client.subscribe(MQTT_TOPIC_PUB)
+    client.subscribe(MQTT_TOPIC_PUB_TEMP)  # Subscribe to temperature topic
+    client.subscribe(MQTT_TOPIC_PUB_MOIS)  # Subscribe to moisture topic
 
-def mqtt_subscribed(client, userdata, mid, granted_qos):
-    print("Subscribed to Topic!!!")
-
+# Function to handle incoming MQTT messages
 def mqtt_recv_message(client, userdata, message):
-    print("Received: ", message.payload.decode("utf-8"))
+    print("Received message on topic:", message.topic)
+    print("Payload:", message.payload.decode("utf-8"))
 
+# Create an MQTT client instance
 mqttClient = mqtt.Client()
 mqttClient.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
-mqttClient.connect(MQTT_SERVER, int(MQTT_PORT), 60)
+mqttClient.connect(MQTT_SERVER, MQTT_PORT, 60)
 
-#Register mqtt events
+# Register MQTT event handlers
 mqttClient.on_connect = mqtt_connected
-mqttClient.on_subscribe = mqtt_subscribed
 mqttClient.on_message = mqtt_recv_message
 
-mqttClient.loop_start()
-
-
-def setOn():
-    mqttClient.publish(MQTT_TOPIC_PUB,1)
-def setOff():
-    mqttClient.publish(MQTT_TOPIC_PUB,0)
-
-
-turnON = True
-def toggle():
-    global turnON
-    if(turnON):
-        setOn()
-        turnON = False
-    else:
-        setOff()
-        turnON = True
-    print(turnON)
-
-while True:
-    # time.sleep(5)
-    # counter += 1
-    # mqttClient.publish(MQTT_TOPIC_SUB_TEMP, counter)
-    # mqttClient.publish(MQTT_TOPIC_SUB_MOIS, 2)
-    print("Press 'A' to trigger the callback function.")
-
-    # Registering the callback function for the 'A' key
-    keyboard.on_press_key('a', lambda _: toggle())
-    keyboard.wait('esc')
+# Start the MQTT client's network loop
+mqttClient.loop_forever()
