@@ -98,7 +98,7 @@ def readMoisture():
 
 while True:
     print("TEST SENSOR")
-    mqttClient.publish(MQTT_TOPIC_PUB_TEMP,readTemperature())
+    mqttClient.publish(MQTT_TOPIC_TEMP,readTemperature())
     time.sleep(1)
-    mqttClient.publish(MQTT_TOPIC_PUB_MOIS,readMoisture())
+    mqttClient.publish(MQTT_TOPIC_MOIS,readMoisture())
     time.sleep(1)
