@@ -1,6 +1,6 @@
 import psycopg2
-from datetime import datetime
 import paho.mqtt.client as mqtt
+from datetime import datetime
 
 # PostgreSQL connection details
 hostname = "bqnbcj8kxuogsigyhnzy-postgresql.services.clever-cloud.com"
@@ -41,28 +41,22 @@ def mqtt_recv_message(client, userdata, message):
     print("Payload:", message.payload.decode("utf-8"))
     # Insert received data into PostgreSQL database along with current timestamp
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    if message.topic == MQTT_TOPIC_TEMP:
-        insert_temperature_data(message.payload.decode("utf-8"), timestamp)
-    elif message.topic == MQTT_TOPIC_MOIS:
-        insert_moisture_data(message.payload.decode("utf-8"), timestamp)
+    insert_data(message.topic, message.payload.decode("utf-8"), timestamp)
 
-# Function to insert temperature data into PostgreSQL database
-def insert_temperature_data(data, timestamp):
+# Function to insert data into PostgreSQL database
+def insert_data(topic, data, timestamp):
     try:
-        cursor.execute("INSERT INTO temperature (value, timestamp) VALUES (%s, %s)", (data, timestamp))
+        if topic == MQTT_TOPIC_TEMP:
+            cursor.execute("INSERT INTO temperature (temperature, timestamp) VALUES (%s, %s)", (data, timestamp))
+            print("Temperature data inserted into PostgreSQL database successfully!")
+        elif topic == MQTT_TOPIC_MOIS:
+            cursor.execute("INSERT INTO moisture (moisture, timestamp) VALUES (%s, %s)", (data, timestamp))
+            print("Moisture data inserted into PostgreSQL database successfully!")
         connection.commit()
-        print("Temperature data inserted into PostgreSQL database successfully!")
     except psycopg2.Error as e:
-        print("Error inserting temperature data into PostgreSQL database:", e)
+        connection.rollback()  # Roll back the transaction in case of an error
+        print("Error inserting data into PostgreSQL database:", e)
 
-# Function to insert moisture data into PostgreSQL database
-def insert_moisture_data(data, timestamp):
-    try:
-        cursor.execute("INSERT INTO moisture (value, timestamp) VALUES (%s, %s)", (data, timestamp))
-        connection.commit()
-        print("Moisture data inserted into PostgreSQL database successfully!")
-    except psycopg2.Error as e:
-        print("Error inserting moisture data into PostgreSQL database:", e)
 
 # Create an MQTT client instance
 mqttClient = mqtt.Client()
