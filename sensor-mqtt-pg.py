@@ -1,3 +1,5 @@
+pip install psycopg2-binary
+
 import psycopg2
 import paho.mqtt.client as mqtt
 from datetime import datetime
