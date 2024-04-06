@@ -11,6 +11,7 @@ MQTT_USERNAME = "testing12345"
 MQTT_PASSWORD = ""
 MQTT_TOPIC_TEMP = MQTT_USERNAME + "/feeds/V1/temp"
 MQTT_TOPIC_MOIS = MQTT_USERNAME + "/feeds/V1/mois"
+MQTT_TOPIC_SUB = MQTT_USERNAME + "/feeds/V1/control"
 
 def mqtt_connected(client, userdata, flags, rc):
     print("Connected succesfully!!")
