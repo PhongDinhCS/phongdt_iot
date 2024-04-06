@@ -102,4 +102,4 @@ while True:
     mqttClient.publish(MQTT_TOPIC_TEMP,readTemperature())
     time.sleep(1)
     mqttClient.publish(MQTT_TOPIC_MOIS,readMoisture())
-    time.sleep(1)
+    time.sleep(5)
