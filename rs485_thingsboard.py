@@ -126,5 +126,8 @@ while True:
     # temp = readTemperature()
     # mois = readMoisture()
     collect_data = {'temperature': temp, 'humidity': mois}
-    mqttClient.publish(MQTT_TOPIC_PUB,json.dumps(collect_data))
+    data_to_publish = json.dumps(collect_data)
+    print("Data to publish:", data_to_publish)
+    mqttClient.publish(MQTT_TOPIC_PUB, data_to_publish)
+
     # time.sleep(1)
