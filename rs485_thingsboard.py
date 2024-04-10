@@ -7,6 +7,12 @@ import json
 
 import psycopg2
 
+host = "bqnbcj8kxuogsigyhnzy-postgresql.services.clever-cloud.com"
+database = "bqnbcj8kxuogsigyhnzy"
+user = "ufjklpchveyybgraqhxu"
+password = "AyR5dzFuySPaAcWd5po1AJMK063nkG"
+port = "50013"
+
 
 MQTT_SERVER = "demo.thingsboard.io"
 MQTT_PORT = 1883
@@ -17,15 +23,15 @@ MQTT_TOPIC_PUB = "v1/devices/me/telemetry"
 MQTT_TOPIC_SUB = "v1/devices/me/rpc/request/+"
 
 # Function to insert JSON data into PostgreSQL database
-def insert_data_into_postgres(json_data):
+def insert_data_into_postgres(json_data, host, database, user, password, port):
     try:
         # Connect to the PostgreSQL database
         connection = psycopg2.connect(
-            host="bqnbcj8kxuogsigyhnzy-postgresql.services.clever-cloud.com",
-            database="bqnbcj8kxuogsigyhnzy",
-            user="ufjklpchveyybgraqhxu",
-            password="AyR5dzFuySPaAcWd5po1AJMK063nkG",
-            port="50013"
+            host=host,
+            database=database,
+            user=user,
+            password=password,
+            port=port
         )
 
         # Create a cursor
@@ -53,8 +59,7 @@ def insert_data_into_postgres(json_data):
             print("PostgreSQL connection is closed")
 
 
-
-
+# function on rs485
 def mqtt_connected(client, userdata, flags, rc):
     print("Connected succesfully!!")
     client.subscribe(MQTT_TOPIC_SUB)
@@ -172,6 +177,6 @@ while True:
     mqttClient.publish(MQTT_TOPIC_PUB, data_to_publish)
 
     # Insert the JSON data into PostgreSQL database
-    insert_data_into_postgres(data_to_publish)
+    insert_data_into_postgres(data_to_publish, host, database, user, password, port)
     
     # time.sleep(1)
