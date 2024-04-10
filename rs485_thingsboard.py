@@ -5,6 +5,8 @@ import serial.tools.list_ports
 import paho.mqtt.client as mqtt
 import json
 
+import psycopg2
+
 
 MQTT_SERVER = "demo.thingsboard.io"
 MQTT_PORT = 1883
@@ -13,6 +15,45 @@ MQTT_ACCESS_TOKEN = "MNUrel9MvIV2iXce3LA1"
 # MQTT_TOPIC_PUB_TEMP = MQTT_USERNAME + "/feeds/V1/mois/"
 MQTT_TOPIC_PUB = "v1/devices/me/telemetry"
 MQTT_TOPIC_SUB = "v1/devices/me/rpc/request/+"
+
+# Function to insert JSON data into PostgreSQL database
+def insert_data_into_postgres(json_data):
+    try:
+        # Connect to the PostgreSQL database
+        connection = psycopg2.connect(
+            host="bqnbcj8kxuogsigyhnzy-postgresql.services.clever-cloud.com",
+            database="bqnbcj8kxuogsigyhnzy",
+            user="ufjklpchveyybgraqhxu",
+            password="AyR5dzFuySPaAcWd5po1AJMK063nkG",
+            port="50013"
+        )
+
+        # Create a cursor
+        cursor = connection.cursor()
+
+        # Define the SQL query to insert JSON data into the database
+        insert_query = "INSERT INTO your_table_name (json_column) VALUES (%s)"
+
+        # Execute the SQL query with the JSON data
+        cursor.execute(insert_query, (json_data,))
+
+        # Commit the transaction
+        connection.commit()
+
+        print("Data inserted successfully into PostgreSQL")
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while inserting data into PostgreSQL:", error)
+
+    finally:
+        # Close database connection
+        if connection:
+            cursor.close()
+            connection.close()
+            print("PostgreSQL connection is closed")
+
+
+
 
 def mqtt_connected(client, userdata, flags, rc):
     print("Connected succesfully!!")
@@ -130,4 +171,7 @@ while True:
     print("Data to publish:", data_to_publish)
     mqttClient.publish(MQTT_TOPIC_PUB, data_to_publish)
 
+    # Insert the JSON data into PostgreSQL database
+    insert_data_into_postgres(data_to_publish)
+    
     # time.sleep(1)
