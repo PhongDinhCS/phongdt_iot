@@ -6,12 +6,14 @@ import paho.mqtt.client as mqtt
 import json
 
 import psycopg2
+from datetime import datetime
 
 host = "bqnbcj8kxuogsigyhnzy-postgresql.services.clever-cloud.com"
 database = "bqnbcj8kxuogsigyhnzy"
 user = "ufjklpchveyybgraqhxu"
 password = "AyR5dzFuySPaAcWd5po1AJMK063nkG"
 port = "50013"
+table_name = "json-rs485"
 
 
 MQTT_SERVER = "demo.thingsboard.io"
@@ -23,7 +25,7 @@ MQTT_TOPIC_PUB = "v1/devices/me/telemetry"
 MQTT_TOPIC_SUB = "v1/devices/me/rpc/request/+"
 
 # Function to insert JSON data into PostgreSQL database
-def insert_data_into_postgres(json_data, host, database, user, password, port):
+def insert_data_into_postgres(json_data, host, database, user, password, port, table_name):
     try:
         # Connect to the PostgreSQL database
         connection = psycopg2.connect(
@@ -38,10 +40,13 @@ def insert_data_into_postgres(json_data, host, database, user, password, port):
         cursor = connection.cursor()
 
         # Define the SQL query to insert JSON data into the database
-        insert_query = "INSERT INTO your_table_name (json_column) VALUES (%s)"
+        insert_query = "INSERT INTO {} (time, tempmois) VALUES (%s, %s)".format(table_name)
 
-        # Execute the SQL query with the JSON data
-        cursor.execute(insert_query, (json_data,))
+        # Get the current timestamp
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Execute the SQL query with the current time and JSON data
+        cursor.execute(insert_query, (current_time, json_data))
 
         # Commit the transaction
         connection.commit()
@@ -176,7 +181,7 @@ while True:
     print("Data to publish:", data_to_publish)
     mqttClient.publish(MQTT_TOPIC_PUB, data_to_publish)
 
-    # Insert the JSON data into PostgreSQL database
-    insert_data_into_postgres(data_to_publish, host, database, user, password, port)
+    # Insert the JSON data into PostgreSQL database with current timestamp
+    insert_data_into_postgres(data_to_publish, host, database, user, password, port, table_name)
     
     # time.sleep(1)
