@@ -13,7 +13,7 @@ database = "bqnbcj8kxuogsigyhnzy"
 user = "ufjklpchveyybgraqhxu"
 password = "AyR5dzFuySPaAcWd5po1AJMK063nkG"
 port = "50013"
-table_name = "json-rs485"
+table_name = "json_rs485"
 
 
 MQTT_SERVER = "demo.thingsboard.io"
@@ -40,13 +40,13 @@ def insert_data_into_postgres(json_data, host, database, user, password, port, t
         cursor = connection.cursor()
 
         # Define the SQL query to insert JSON data into the database
-        insert_query = "INSERT INTO {} (time, tempmois) VALUES (%s, %s)".format(table_name)
+        insert_query = "INSERT INTO {} (time, tempmois) VALUES (%s, %s::jsonb)".format(table_name)
 
         # Get the current timestamp
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         # Execute the SQL query with the current time and JSON data
-        cursor.execute(insert_query, (current_time, json_data))
+        cursor.execute(insert_query, (current_time, json.dumps(json_data)))
 
         # Commit the transaction
         connection.commit()
@@ -62,7 +62,6 @@ def insert_data_into_postgres(json_data, host, database, user, password, port, t
             cursor.close()
             connection.close()
             print("PostgreSQL connection is closed")
-
 
 # function on rs485
 def mqtt_connected(client, userdata, flags, rc):
