@@ -46,7 +46,7 @@ def insert_data_into_postgres(json_data, host, database, user, password, port, t
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         # Execute the SQL query with the current time and JSON data
-        cursor.execute(insert_query, (current_time, json.dumps(json_data)))
+        cursor.execute(insert_query, (current_time, json_data))
 
         # Commit the transaction
         connection.commit()
@@ -177,7 +177,7 @@ while True:
     # mois = readMoisture()
     collect_data = {'temperature': temp, 'humidity': mois}
     data_to_publish = json.dumps(collect_data)
-    print("Data to publish:", data_to_publish)
+    print("Data to publish:        ", data_to_publish)
     mqttClient.publish(MQTT_TOPIC_PUB, data_to_publish)
 
     # Insert the JSON data into PostgreSQL database with current timestamp
