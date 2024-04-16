@@ -208,6 +208,7 @@ while True:
     print("TEST SENSOR")
     # mqttClient.publish(MQTT_TOPIC_PUB_TEMP,readTemperature())
     time.sleep(60)
+    
     temp = readTemperature()
     mois = readMoisture()
     collect_data = {'temperature': temp, 'humidity': mois}
@@ -220,9 +221,5 @@ while True:
 
     # Get TempHCM
     temperatureHCM = get_current_temperatureHCM(url)
-        if temperatureHCM:
-            print("HCM Temperature:", temperatureHCM)
-        else:
-            print("HCM Temperature not found.")
+    print("HCM Temperature:", temperatureHCM)
     
-    # time.sleep(1)
