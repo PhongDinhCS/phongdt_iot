@@ -189,7 +189,7 @@ def get_current_temperatureHCM(url):
 while True:
     print("TEST SENSOR")
     # mqttClient.publish(MQTT_TOPIC_PUB_TEMP,readTemperature())
-    time.sleep(30)
+    time.sleep(10)
     
     temp = readTemperature()
     mois = readMoisture()
