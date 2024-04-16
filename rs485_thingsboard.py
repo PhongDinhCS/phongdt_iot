@@ -167,14 +167,14 @@ def readMoisture():
     time.sleep(1)
     return serial_read_data(ser)
 
-temp = 10
-mois = 10
+# temp = 10
+# mois = 10
 while True:
     print("TEST SENSOR")
     # mqttClient.publish(MQTT_TOPIC_PUB_TEMP,readTemperature())
-    time.sleep(10)
-    # temp = readTemperature()
-    # mois = readMoisture()
+    time.sleep(60)
+    temp = readTemperature()
+    mois = readMoisture()
     collect_data = {'temperature': temp, 'humidity': mois}
     data_to_publish = json.dumps(collect_data)
     print("Data to publish:        ", data_to_publish)
