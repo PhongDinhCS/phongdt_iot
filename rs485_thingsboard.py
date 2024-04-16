@@ -184,7 +184,8 @@ def get_current_temperatureHCM(url):
     # Find the element with class 'display-temp' and get its text
     temp_element = soup.find('div', class_='h2')
     print("temp_element:", temp_element)
-    return temp_element
+    temperature_string = temp_element.text.strip()
+    return temperature_string
 
 # temp = 10
 # mois = 10
