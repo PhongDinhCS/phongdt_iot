@@ -8,6 +8,9 @@ import json
 import psycopg2
 from datetime import datetime
 
+import requests
+from bs4 import BeautifulSoup
+
 host = "bqnbcj8kxuogsigyhnzy-postgresql.services.clever-cloud.com"
 database = "bqnbcj8kxuogsigyhnzy"
 user = "ufjklpchveyybgraqhxu"
@@ -15,6 +18,7 @@ password = "AyR5dzFuySPaAcWd5po1AJMK063nkG"
 port = "50013"
 table_name = "json_rs485"
 
+url = 'https://www.timeanddate.com/weather/vietnam/ho-chi-minh'
 
 MQTT_SERVER = "demo.thingsboard.io"
 MQTT_PORT = 1883
@@ -166,6 +170,40 @@ def readMoisture():
     ser.write(soil_moisture)
     time.sleep(1)
     return serial_read_data(ser)
+
+def get_current_temperature(url):
+    # Send a GET request to the URL
+    response = requests.get(url)
+
+    # Parse the HTML content using BeautifulSoup
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    # Find the element with class 'display-temp' and get its text
+    temp_element = soup.find('div', class_='h2')
+    if temp_element:
+         # Extracting the temperature string
+        temperature_string = temp_element.text.strip()
+
+        # Cleaning up the temperature string
+        temperature_string = temperature_string.replace("\xa0", " ")  # Replace non-breaking space with regular space
+        temperature_string = temperature_string.replace("°F", "")     # Remove the degree symbol and "F"
+
+        try:
+            # Convert the cleaned temperature string to Celsius
+            temperature_celsius = (int(temperature_string) - 32) * 5/9
+
+            # Round the temperature to two decimal places
+            temperature_celsius = round(temperature_celsius, 2)
+
+            return temperature_celsius
+        except ValueError:
+            print("Error: Unable to convert temperature to Celsius.")
+            return None
+    else:
+        return None
+
+def main():
+    url = 'https://www.timeanddate.com/weather/vietnam/ho-chi-minh'
 
 # temp = 10
 # mois = 10
