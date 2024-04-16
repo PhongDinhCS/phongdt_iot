@@ -171,7 +171,7 @@ def readMoisture():
     time.sleep(1)
     return serial_read_data(ser)
 
-def get_current_temperature(url):
+def get_current_temperatureHCM(url):
     # Send a GET request to the URL
     response = requests.get(url)
 
@@ -202,9 +202,6 @@ def get_current_temperature(url):
     else:
         return None
 
-def main():
-    url = 'https://www.timeanddate.com/weather/vietnam/ho-chi-minh'
-
 # temp = 10
 # mois = 10
 while True:
@@ -220,5 +217,12 @@ while True:
 
     # Insert the JSON data into PostgreSQL database with current timestamp
     insert_data_into_postgres(data_to_publish, host, database, user, password, port, table_name)
+
+    # Get TempHCM
+    temperatureHCM = get_current_temperatureHCM(url)
+        if temperatureHCM:
+            print("Current Temperature:", temperatureHCM)
+        else:
+            print("Temperature not found.")
     
     # time.sleep(1)
