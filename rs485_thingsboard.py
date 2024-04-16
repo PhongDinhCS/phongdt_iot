@@ -221,5 +221,7 @@ while True:
 
     # Get TempHCM
     temperatureHCM = get_current_temperatureHCM(url)
+    print("response: ", response)
+    print("soup:", soup)
     print("HCM Temperature:", temperatureHCM)
     
