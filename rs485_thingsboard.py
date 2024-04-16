@@ -221,8 +221,8 @@ while True:
     # Get TempHCM
     temperatureHCM = get_current_temperatureHCM(url)
         if temperatureHCM:
-            print("Current Temperature:", temperatureHCM)
+            print("HCM Temperature:", temperatureHCM)
         else:
-            print("Temperature not found.")
+            print("HCM Temperature not found.")
     
     # time.sleep(1)
