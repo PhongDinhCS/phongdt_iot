@@ -184,29 +184,7 @@ def get_current_temperatureHCM(url):
     # Find the element with class 'display-temp' and get its text
     temp_element = soup.find('div', class_='h2')
     print("temp_element:", temp_element)
-
-    
-    if temp_element:
-         # Extracting the temperature string
-        temperature_string = temp_element.text.strip()
-
-        # Cleaning up the temperature string
-        temperature_string = temperature_string.replace("\xa0", " ")  # Replace non-breaking space with regular space
-        temperature_string = temperature_string.replace("°F", "")     # Remove the degree symbol and "F"
-
-        try:
-            # Convert the cleaned temperature string to Celsius
-            temperature_celsius = (int(temperature_string) - 32) * 5/9
-
-            # Round the temperature to two decimal places
-            temperature_celsius = round(temperature_celsius, 2)
-            return temperature_celsius
-            
-        except ValueError:
-            print("Error: Unable to convert temperature to Celsius.")
-            return None
-    else:
-        return None
+    return temp_element
 
 # temp = 10
 # mois = 10
