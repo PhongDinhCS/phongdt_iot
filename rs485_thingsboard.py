@@ -174,9 +174,12 @@ def readMoisture():
 def get_current_temperatureHCM(url):
     # Send a GET request to the URL
     response = requests.get(url)
+    print("response: ", response)
 
     # Parse the HTML content using BeautifulSoup
     soup = BeautifulSoup(response.content, 'html.parser')
+    print("soup:", soup)
+    
 
     # Find the element with class 'display-temp' and get its text
     temp_element = soup.find('div', class_='h2')
@@ -194,8 +197,8 @@ def get_current_temperatureHCM(url):
 
             # Round the temperature to two decimal places
             temperature_celsius = round(temperature_celsius, 2)
-
             return temperature_celsius
+            
         except ValueError:
             print("Error: Unable to convert temperature to Celsius.")
             return None
@@ -221,7 +224,5 @@ while True:
 
     # Get TempHCM
     temperatureHCM = get_current_temperatureHCM(url)
-    print("response: ", response)
-    print("soup:", soup)
     print("HCM Temperature:", temperatureHCM)
     
