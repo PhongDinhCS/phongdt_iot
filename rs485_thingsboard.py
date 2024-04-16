@@ -174,13 +174,10 @@ def readMoisture():
 def get_current_temperatureHCM(url):
     # Send a GET request to the URL
     response = requests.get(url)
-    print("response: ", response)
 
     # Parse the HTML content using BeautifulSoup
     soup = BeautifulSoup(response.content, 'html.parser')
-    print("soup:", soup)
     
-
     # Find the element with class 'display-temp' and get its text
     temp_element = soup.find('div', class_='h2')
     print("temp_element:", temp_element)
