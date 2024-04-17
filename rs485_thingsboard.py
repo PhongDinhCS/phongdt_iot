@@ -245,7 +245,7 @@ while True:
     print("Data to publish:        ", data_to_publish)
 
     data_to_publish_hcm = json.dumps(collect_data_hcm)
-    print("Data to publish:        ", data_to_publish_hcm)
+    print("Data to publish hcm:        ", data_to_publish_hcm)
 
     
     mqttClient.publish(MQTT_TOPIC_PUB, data_to_publish)
@@ -253,6 +253,7 @@ while True:
 
     # Insert the JSON data into PostgreSQL database with current timestamp
     insert_data_into_postgres(data_to_publish, host, database, user, password, port, table_name)
+    insert_data_into_postgres(data_to_publish_hcm, host, database, user, password, port, table_name_hcm)
 
 
     
