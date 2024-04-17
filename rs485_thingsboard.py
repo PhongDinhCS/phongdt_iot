@@ -261,7 +261,7 @@ def get_current_humidityHCM(url):
 while True:
     print("TEST SENSOR")
     # mqttClient.publish(MQTT_TOPIC_PUB_TEMP,readTemperature())
-    time.sleep(10)
+    time.sleep(60)
 
     #read data from sensor
     temp = readTemperature()
