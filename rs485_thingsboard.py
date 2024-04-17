@@ -69,7 +69,7 @@ def insert_data_into_postgres(json_data, host, database, user, password, port, t
             print("PostgreSQL connection is closed")
 
 # Function to insert JSON data into PostgreSQL database HCM
-def insert_data_into_postgres(json_data, host, database, user, password, port, table_name_hcm):
+def insert_data_into_postgres_hcm(json_data, host, database, user, password, port, table_name_hcm):
     try:
         # Connect to the PostgreSQL database
         connection = psycopg2.connect(
