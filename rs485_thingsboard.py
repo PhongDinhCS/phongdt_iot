@@ -17,6 +17,7 @@ user = "ufjklpchveyybgraqhxu"
 password = "AyR5dzFuySPaAcWd5po1AJMK063nkG"
 port = "50013"
 table_name = "json_rs485"
+table_name_hcm = "temp_mois_HCM"
 
 url = 'https://www.timeanddate.com/weather/vietnam/ho-chi-minh'
 
@@ -232,15 +233,21 @@ while True:
     print("HCM Temperature:", temperatureHCM)
 
     # Get the current humidity in Ho Chi Minh City
-    humidity_value = get_current_humidityHCM(url)
-    print("humidity_value:", humidity_value)
+    humidityHCM = get_current_humidityHCM(url)
+    print("humidity_value:", humidityHCM)
 
     #prepare set of data
     collect_data = {'temperature': temp, 'humidity': mois}
+    collect_data_hcm = {'temperaturehcm': temperatureHCM, 'humidityhcm': humidityHCM}
 
     
     data_to_publish = json.dumps(collect_data)
     print("Data to publish:        ", data_to_publish)
+
+    data_to_publish_hcm = json.dumps(collect_data_hcm)
+    print("Data to publish:        ", data_to_publish_hcm)
+
+    
     mqttClient.publish(MQTT_TOPIC_PUB, data_to_publish)
 
 
