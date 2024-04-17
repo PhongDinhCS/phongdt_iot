@@ -171,6 +171,7 @@ def readMoisture():
     time.sleep(1)
     return serial_read_data(ser)
 
+
 def get_current_temperatureHCM(url):
     # Send a GET request to the URL
     response = requests.get(url)
@@ -181,7 +182,39 @@ def get_current_temperatureHCM(url):
     # Find the element with class 'display-temp' and get its text
     temp_element = soup.find('div', class_='h2')
     temperature_string = temp_element.text.strip()
-    return temperature_string
+    temperature_indexEnd = temperature_string.index('°')
+    temperature_value = temperature_string[:temperature_indexEnd]
+
+    return temperature_value
+
+def get_current_humidityHCM(url):
+    # Send a GET request to the URL
+    response = requests.get(url)
+
+    # Parse the HTML content using BeautifulSoup
+    soup = BeautifulSoup(response.content, 'html.parser')
+    weather_table = soup.find('table', class_='table--left')
+    rows = weather_table.find_all('tr')
+
+    # Initialize variable to store humidity
+    humidity_value = None
+
+    # Iterate through each row in the table
+    for row in rows:
+        # Extract text from the row
+        tag_string = row.text.strip()
+        
+        # Check if the row contains humidity information
+        if "Humidity:" in tag_string:
+            # Extract the digits before '%' character
+            humidity_indexEnd = tag_string.index('%')
+            humidity_indexStart = tag_string.index(':') + 1
+            humidity_value = tag_string[humidity_indexStart:humidity_indexEnd]
+            break
+
+    return humidity_value
+
+
 
 # temp = 10
 # mois = 10
@@ -189,18 +222,28 @@ while True:
     print("TEST SENSOR")
     # mqttClient.publish(MQTT_TOPIC_PUB_TEMP,readTemperature())
     time.sleep(10)
-    
+
+    #read data from sensor
     temp = readTemperature()
     mois = readMoisture()
-    collect_data = {'temperature': temp, 'humidity': mois}
-    data_to_publish = json.dumps(collect_data)
-    print("Data to publish:        ", data_to_publish)
-    mqttClient.publish(MQTT_TOPIC_PUB, data_to_publish)
-
-    # Insert the JSON data into PostgreSQL database with current timestamp
-    insert_data_into_postgres(data_to_publish, host, database, user, password, port, table_name)
 
     # Get TempHCM
     temperatureHCM = get_current_temperatureHCM(url)
     print("HCM Temperature:", temperatureHCM)
+
+    
+
+    #prepare set of data
+    collect_data = {'temperature': temp, 'humidity': mois}
+
+    
+    data_to_publish = json.dumps(collect_data)
+    print("Data to publish:        ", data_to_publish)
+    mqttClient.publish(MQTT_TOPIC_PUB, data_to_publish)
+
+
+    # Insert the JSON data into PostgreSQL database with current timestamp
+    insert_data_into_postgres(data_to_publish, host, database, user, password, port, table_name)
+
+
     
