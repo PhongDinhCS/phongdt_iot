@@ -84,7 +84,7 @@ def insert_data_into_postgres_hcm(json_data, host, database, user, password, por
         cursor = connection.cursor()
 
         # Define the SQL query to insert JSON data into the database
-        insert_query = "INSERT INTO {} (time, tempmoisHCM) VALUES (%s, %s::jsonb)".format(table_name)
+        insert_query = "INSERT INTO {} (time, tempmoisHCM) VALUES (%s, %s::jsonb)".format(table_name_hcm)
 
         # Get the current timestamp
         current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
