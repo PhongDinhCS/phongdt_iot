@@ -223,7 +223,7 @@ def get_current_temperatureHCM(url):
     temp_element = soup.find('div', class_='h2')
     temperature_string = temp_element.text.strip()
     temperature_indexEnd = temperature_string.index('°')
-    temperature_value = temperature_string[:temperature_indexEnd]
+    temperature_value = float(temperature_string[:temperature_indexEnd])
 
     return temperature_value
 
@@ -249,7 +249,7 @@ def get_current_humidityHCM(url):
             # Extract the digits before '%' character
             humidity_indexEnd = tag_string.index('%')
             humidity_indexStart = tag_string.index(':') + 1
-            humidity_value = tag_string[humidity_indexStart:humidity_indexEnd]
+            humidity_value = float(tag_string[humidity_indexStart:humidity_indexEnd])
             break
 
     return humidity_value
