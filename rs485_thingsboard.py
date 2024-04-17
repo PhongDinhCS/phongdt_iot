@@ -17,7 +17,7 @@ user = "ufjklpchveyybgraqhxu"
 password = "AyR5dzFuySPaAcWd5po1AJMK063nkG"
 port = "50013"
 table_name = "json_rs485"
-table_name_hcm = "temp_mois_HCM"
+table_name_hcm = "temp_mois_hcm"
 
 url = 'https://www.timeanddate.com/weather/vietnam/ho-chi-minh'
 
