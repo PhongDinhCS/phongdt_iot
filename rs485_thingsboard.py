@@ -231,7 +231,9 @@ while True:
     temperatureHCM = get_current_temperatureHCM(url)
     print("HCM Temperature:", temperatureHCM)
 
-    
+    # Get the current humidity in Ho Chi Minh City
+    humidity_value = get_current_humidityHCM(url)
+    print("humidity_value:", humidity_value)
 
     #prepare set of data
     collect_data = {'temperature': temp, 'humidity': mois}
