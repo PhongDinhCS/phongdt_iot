@@ -68,6 +68,45 @@ def insert_data_into_postgres(json_data, host, database, user, password, port, t
             connection.close()
             print("PostgreSQL connection is closed")
 
+# Function to insert JSON data into PostgreSQL database HCM
+def insert_data_into_postgres(json_data, host, database, user, password, port, table_name_hcm):
+    try:
+        # Connect to the PostgreSQL database
+        connection = psycopg2.connect(
+            host=host,
+            database=database,
+            user=user,
+            password=password,
+            port=port
+        )
+
+        # Create a cursor
+        cursor = connection.cursor()
+
+        # Define the SQL query to insert JSON data into the database
+        insert_query = "INSERT INTO {} (time, tempmoisHCM) VALUES (%s, %s::jsonb)".format(table_name)
+
+        # Get the current timestamp
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Execute the SQL query with the current time and JSON data
+        cursor.execute(insert_query, (current_time, json_data))
+
+        # Commit the transaction
+        connection.commit()
+
+        print("Data inserted successfully into PostgreSQL HCM")
+
+    except (Exception, psycopg2.Error) as error:
+        print("Error while inserting data into PostgreSQL HCM:", error)
+
+    finally:
+        # Close database connection
+        if connection:
+            cursor.close()
+            connection.close()
+            print("PostgreSQL connection is closed")
+
 # function on rs485
 def mqtt_connected(client, userdata, flags, rc):
     print("Connected succesfully!!")
@@ -253,7 +292,7 @@ while True:
 
     # Insert the JSON data into PostgreSQL database with current timestamp
     insert_data_into_postgres(data_to_publish, host, database, user, password, port, table_name)
-    insert_data_into_postgres(data_to_publish_hcm, host, database, user, password, port, table_name_hcm)
+    insert_data_into_postgres_hcm(data_to_publish_hcm, host, database, user, password, port, table_name_hcm)
 
 
     
